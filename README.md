@@ -63,7 +63,13 @@ It exercises bounded copying, final partial buffers, comparison, mismatch offset
 
 ## Hardware validation record
 
-Linux Mint 22.3 Xfce was successfully written and verified byte-for-byte for `3,033,710,592` bytes on two SanDisk Ultra devices: serials ending `1473` and `1450`. Both devices booted successfully on a UEFI machine. Hardware results do not guarantee every image, port, controller, or computer will behave the same way.
+Linux Mint 22.3 Xfce was successfully written and verified byte-for-byte for `3,033,710,592` bytes on these USB devices:
+
+- SanDisk Ultra, serial ending `1473` — UEFI boot confirmed.
+- SanDisk Ultra, serial ending `1450` — UEFI boot confirmed.
+- JetFlash Transcend 4GB, serial `AA00000000000485` — UEFI boot confirmed.
+
+Hardware results do not guarantee every image, port, controller, or computer will behave the same way.
 
 ## License
 
