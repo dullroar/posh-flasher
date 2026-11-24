@@ -120,7 +120,7 @@ This is **sample evidence from the author's own hardware, not a certification.**
 | Linux Mint 22.3 Xfce (`3,033,710,592` bytes) | SanDisk Ultra, serial ending `1450` | Not recorded | Windows 11 | Written and verified byte-for-byte; booted on an ASUS UX331U laptop (pre-1.0.0) |
 | Xubuntu 26.10 desktop (`5,282,123,776` bytes) | SanDisk Ultra (15.7 GB, USB), serial ending `1473` | Not recorded | Windows 11 | **1.0.0:** audit outcome `Success`; identity unchanged before and after; cleanup succeeded with no failures; booted an ASUS UX331U laptop |
 
-The first two rows predate the 1.0.0 hardening pass. The third row is the first recorded real-hardware run of 1.0.0 (2026-11-24). It covers one device and one image, all boot tests were on the same ASUS UX331U laptop. No failures were noted in these runs.
+The first two rows predate the 1.0.0 hardening pass. The third row is the first recorded real-hardware run of 1.0.0 (2026-11-24). Across all three rows, two images (Linux Mint 22.3 Xfce and Xubuntu 26.10) were written to two SanDisk Ultra sticks and booted on a single computer, an ASUS UX331U laptop. No failures were noted in these runs.
 
 ## License
 
