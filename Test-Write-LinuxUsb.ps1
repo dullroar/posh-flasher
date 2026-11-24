@@ -121,7 +121,7 @@ try {
     Assert-Equal ($script:AutoMountCalls -join ',') 'True' 'automount restored'; Assert-True (-not $c.WasAutoMountDisabled) 'state cleared'
     $script:FailRestore = $true
     $c = New-CleanupState; $h1 = New-Object IO.MemoryStream; [void]$c.OpenedVolumeHandles.Add($h1); $c.WasAutoMountDisabled = $true
-    $warnings = @(); $ok = Invoke-Cleanup $c 3>&1 6>$null | ForEach-Object { if($_ -is [Management.Automation.WarningRecord]){ $warnings += $_.Message } else { $_ } }
+    $warnings = @(); [void](Invoke-Cleanup $c 3>&1 6>$null | ForEach-Object { if($_ -is [Management.Automation.WarningRecord]){ $warnings += $_.Message } else { $_ } })
     Assert-True (-not $h1.CanRead) 'handles still disposed when automount restore fails'
     Assert-True (@($c.Failures).Count -eq 1 -and $c.WasAutoMountDisabled) 'restore failure recorded and state retained'
     Assert-True (($warnings -join ' ') -match 'mountvol /E') 'recovery guidance names mountvol /E'

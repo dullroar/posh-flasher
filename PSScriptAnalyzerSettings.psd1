@@ -7,7 +7,12 @@
         'PSUseShouldProcessForStateChangingFunctions',
         # 'Fail' and 'Show-Disk' are deliberate short internal names.
         'PSUseSingularNouns',
-        'PSUseApprovedVerbs'
+        'PSUseApprovedVerbs',
+        # -WhatIf is a deliberate custom dry-run switch with its own semantics (no ShouldProcess).
+        'PSUseSupportsShouldProcess',
+        # Test doubles intentionally shadow cmdlets and ignore most parameters.
+        'PSAvoidOverwritingBuiltInCmdlets',
+        'PSReviewUnusedParameter'
     )
     # Unused variables, ambiguous assignments, and the like stay enabled via the default rule set.
 }
