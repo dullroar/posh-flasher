@@ -4,7 +4,7 @@
 
 ## 1.0.0
 
-Hardening and release-readiness pass (see `plans/productionify.md`).
+Hardening and release-readiness pass (see `plans/productionify.md`). Validated on real hardware: SanDisk Ultra USB, Xubuntu 26.10, 2026-11-24 (see README).
 
 Safety
 - Full target identity lock (number, bus, model, serial, unique ID, GUID, size, sector size, partition layout) re-checked after confirmation, after volume lock, and (hardware fields) after the write. Any difference aborts with the changed field named.

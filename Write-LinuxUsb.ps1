@@ -130,8 +130,12 @@ function New-LinuxUsbState {
         [bool] $Verify, [bool] $VerifyOnly, [bool] $WhatIf, [bool] $ShowHash, [bool] $ListDisks,
         [string] $LogPath
     )
+    # PSBoundParametersDictionary does not expose a usable Contains() on all PowerShell versions;
+    # copy into a plain hashtable so .Contains(key) always works.
+    $boundCopy = @{}
+    foreach ($key in $Bound.Keys) { $boundCopy[$key] = $Bound[$key] }
     [pscustomobject]@{
-        Bound = $Bound; ImageFile = $ImageFile; DiskNumber = $DiskNumber
+        Bound = $boundCopy; ImageFile = $ImageFile; DiskNumber = $DiskNumber
         Verify = $Verify; VerifyOnly = $VerifyOnly; WhatIf = $WhatIf; ShowHash = $ShowHash; ListDisks = $ListDisks
         LogPath = $LogPath
         DefaultImagePath = 'C:\ISO\linux-installer.iso'
@@ -464,7 +468,11 @@ function Get-OpenedVolumeExtents {
         $buffer = New-Object byte[] $size; [uint32]$returned = 0
         if ([LinuxUsb.NativeV4]::DeviceIoControl($Handle,[LinuxUsb.NativeV4]::IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS,[IntPtr]::Zero,0,$buffer,[uint32]$buffer.Length,[ref]$returned,[IntPtr]::Zero)) { break }
         $lastError = [Runtime.InteropServices.Marshal]::GetLastWin32Error()
-        if ($lastError -ne 234 -or $size -ge 65536) { Fail "Could not read disk extents for volume ${Path}: $(Get-Win32Message)" 'HardwareMismatch' }
+        if ($lastError -ne 234 -or $size -ge 65536) {
+            # Volumes with no disk extents (virtual/network/optical/etc.) fail here; let the caller decide.
+            $script:LastExtentError = Format-Win32Error $lastError
+            return $null
+        }
         $size *= 2
     }
     if ($returned -lt 4) { Fail "Volume $Path returned invalid disk extents." 'HardwareMismatch' }
@@ -490,7 +498,15 @@ function Lock-TargetVolumes {
         $openPath = $path.TrimEnd('\')
         $h = [LinuxUsb.NativeV4]::CreateFile($openPath, [LinuxUsb.NativeV4]::GENERIC_READ -bor [LinuxUsb.NativeV4]::GENERIC_WRITE, 3, [IntPtr]::Zero, [LinuxUsb.NativeV4]::OPEN_EXISTING, 0, [IntPtr]::Zero)
         if ($h.IsInvalid) { $h.Dispose(); Fail "Could not open volume $path while resolving target mapping: $(Get-Win32Message)" 'LockFailure' }
-        try { $extents = @(Get-OpenedVolumeExtents $h $path) } catch { $h.Dispose(); throw }
+        try { $rawExtents = Get-OpenedVolumeExtents $h $path } catch { $h.Dispose(); throw }
+        if ($null -eq $rawExtents) {
+            # Cannot map this volume to a disk. Refuse only if the Storage module says it belongs to the target.
+            $h.Dispose()
+            if ($storagePaths -contains $path) { Fail "Could not read disk extents for target volume ${path}: $script:LastExtentError" 'HardwareMismatch' }
+            Write-Verbose "Skipping volume $path (no disk extents: $script:LastExtentError); not on target disk."
+            continue
+        }
+        $extents = @($rawExtents)
         Write-Verbose "Volume $path maps to disk(s): $($extents -join ',')"
         if ($extents -notcontains $Target.Number) { $h.Dispose(); continue }
         [void]$Cleanup.OpenedVolumeHandles.Add($h)
