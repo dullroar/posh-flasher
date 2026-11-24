@@ -116,10 +116,11 @@ This is **sample evidence from the author's own hardware, not a certification.**
 
 | Image | Device | Controller / port | OS | Result |
 |---|---|---|---|---|
-| Linux Mint 22.3 Xfce (`3,033,710,592` bytes) | SanDisk Ultra, serial ending `1473` | Not recorded | Windows 11 | Written and verified byte-for-byte; booted on a UEFI machine |
-| Linux Mint 22.3 Xfce (`3,033,710,592` bytes) | SanDisk Ultra, serial ending `1450` | Not recorded | Windows 11 | Written and verified byte-for-byte; not boot-tested |
+| Linux Mint 22.3 Xfce (`3,033,710,592` bytes) | SanDisk Ultra, serial ending `1473` | Not recorded | Windows 11 | Written and verified byte-for-byte; booted on a UEFI machine (pre-1.0.0) |
+| Linux Mint 22.3 Xfce (`3,033,710,592` bytes) | SanDisk Ultra, serial ending `1450` | Not recorded | Windows 11 | Written and verified byte-for-byte; not boot-tested (pre-1.0.0) |
+| Xubuntu 26.10 desktop (`5,282,123,776` bytes) | SanDisk Ultra (15.7 GB, USB), serial ending `1473` | Not recorded | Windows 11 | **1.0.0:** audit outcome `Success`; identity unchanged before and after; cleanup succeeded with no failures. Boot not tested |
 
-These records predate the 1.0.0 hardening pass. Re-validation on real hardware with 1.0.0 has not yet been recorded. No failures were noted in these two runs.
+The first two rows predate the 1.0.0 hardening pass. The third row is the first recorded real-hardware run of 1.0.0 (2026-11-24). It covers one device and one image only. No failures were noted in these runs.
 
 ## License
 
